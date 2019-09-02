@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react';
+import CriarAtividade from './CriarAtividade'
+import CriarTodos from './CriarTodos'
+
+let numAtv = 0;
 
 function App() {
+  const [atividades, setAtividades] = useState([]);
+  const [id, setId] = useState(numAtv);
+  useEffect(()=>{
+    setAtividades(atividades)
+  })
+  const riscarAtv = (atv, todo)=>{
+    
+    let div = document.getElementById(todo)
+    div.className += "text"
+  }
+  const addAtv = (nome)=>{
+    const dict = {nome, todos:[], id};
+    numAtv++;
+    setId(numAtv)
+    setAtividades([...atividades,dict])
+    
+  }
+  const addTodos = (atv, todo)=>{
+
+    const idx = atividades.findIndex(item =>{
+      return item.id === atv.id
+    })
+    atv['todos'].push(todo)
+    atividades[idx] = atv
+    setAtividades([...atividades])
+  }
+  const createAtv = ()=>{
+    return (<CriarAtividade addAtv={addAtv} />);
+  }
+  const criarTodos = ()=>{
+    return atividades.map((item)=>{
+      return (<CriarTodos atv={item} addTodos={addTodos}  riscarAtv={riscarAtv} />);
+    });
+    
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      { createAtv() }
+      <hr/>
+      <h3>Atividades</h3>
+      { criarTodos() }
     </div>
   );
 }
